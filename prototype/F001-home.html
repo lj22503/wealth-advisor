@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理财经理投顾系统 - 首页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-change {
+            font-size: 14px;
+            color: #4CAF50;
+        }
+        
+        .stat-change.negative {
+            color: #F44336;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .action-btn i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .action-btn span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .recent-clients {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .view-all {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .view-all:hover {
+            text-decoration: underline;
+        }
+        
+        .client-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .client-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid #f0f0f0;
+            color: #666;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .client-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .client-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .client-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .risk-low {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .risk-moderate {
+            background-color: #FFF3E0;
+            color: #EF6C00;
+        }
+        
+        .risk-high {
+            background-color: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .assets {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .client-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>理财经理投顾系统</h1>
+            <p>欢迎回来，李经理！今天是 2026年3月13日</p>
+        </div>
+        
+        <!-- 数据统计 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>总客户数</h3>
+                <div class="stat-value">1,248</div>
+                <div class="stat-change">+12 本周新增</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>管理资产总额</h3>
+                <div class="stat-value">¥8.76亿</div>
+                <div class="stat-change">+5.2% 较上月</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>平均收益率</h3>
+                <div class="stat-value">+8.4%</div>
+                <div class="stat-change">+1.2% 超越基准</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>待处理事项</h3>
+                <div class="stat-value">18</div>
+                <div class="stat-change">3 项紧急</div>
+            </div>
+        </div>
+        
+        <!-- 快捷操作 -->
+        <div class="quick-actions">
+            <button class="action-btn" onclick="location.href='F002-client-list.html'">
+                <i class="fas fa-users"></i>
+                <span>客户管理</span>
+            </button>
+            
+            <button class="action-btn" onclick="location.href='F003-excel-import.html'">
+                <i class="fas fa-file-import"></i>
+                <span>数据导入</span>
+            </button>
+            
+            <button class="action-btn" onclick="location.href='F005-holding-diagnosis.html'">
+                <i class="fas fa-chart-line"></i>
+                <span>持仓诊断</span>
+            </button>
+            
+            <button class="action-btn" onclick="location.href='F008-report-preview.html'">
+                <i class="fas fa-file-pdf"></i>
+                <span>报告生成</span>
+            </button>
+        </div>
+        
+        <!-- 最近客户 -->
+        <div class="recent-clients">
+            <div class="section-header">
+                <h2>最近访问的客户</h2>
+                <a href="F002-client-list.html" class="view-all">查看全部 →</a>
+            </div>
+            
+            <table class="client-table">
+                <thead>
+                    <tr>
+                        <th>客户姓名</th>
+                        <th>风险等级</th>
+                        <th>总资产</th>
+                        <th>最近访问</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="client-name">张伟</td>
+                        <td><span class="risk-badge risk-moderate">稳健型</span></td>
+                        <td class="assets">¥3,250,000</td>
+                        <td>今天 10:30</td>
+                        <td><a href="F004-client-detail.html?id=1">查看详情</a></td>
+                    </tr>
+                    <tr>
+                        <td class="client-name">王芳</td>
+                        <td><span class="risk-badge risk-low">保守型</span></td>
+                        <td class="assets">¥1,850,000</td>
+                        <td>昨天 15:45</td>
+                        <td><a href="F004-client-detail.html?id=2">查看详情</a></td>
+                    </tr>
+                    <tr>
+                        <td class="client-name">李强</td>
+                        <td><span class="risk-badge risk-high">进取型</span></td>
+                        <td class="assets">¥5,600,000</td>
+                        <td>昨天 11:20</td>
+                        <td><a href="F004-client-detail.html?id=3">查看详情</a></td>
+                    </tr>
+                    <tr>
+                        <td class="client-name">刘洋</td>
+                        <td><span class="risk-badge risk-moderate">稳健型</span></td>
+                        <td class="assets">¥2,750,000</td>
+                        <td>3月11日</td>
+                        <td><a href="F004-client-detail.html?id=4">查看详情</a></td>
+                    </tr>
+                    <tr>
+                        <td class="client-name">陈静</td>
+                        <td><span class="risk-badge risk-low">保守型</span></td>
+                        <td class="assets">¥1,200,000</td>
+                        <td>3月10日</td>
+                        <td><a href="F004-client-detail.html?id=5">查看详情</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 系统通知 -->
+        <div class="recent-clients">
+            <div class="section-header">
+                <h2>系统通知</h2>
+            </div>
+            <div style="padding: 15px 0;">
+                <div style="display: flex; align-items: flex-start; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="background: #E3F2FD; color: #1976D2; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; margin-bottom: 5px;">基金数据已更新</div>
+                        <div style="color: #666; font-size: 14px;">2026年3月13日的基金净值数据已同步完成</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-start; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="background: #F3E5F5; color: #7B1FA2; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; margin-bottom: 5px;">季度报告提醒</div>
+                        <div style="color: #666; font-size: 14px;">3位客户的季度投资报告即将到期，请及时处理</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-start;">
+                    <div style="background: #E8F5E9; color: #388E3C; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; margin-bottom: 5px;">系统维护完成</div>
+                        <div style="color: #666; font-size: 14px;">系统已于今日凌晨完成例行维护，运行正常</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>理财经理投顾系统 © 2026 | 版本 1.0.0 | 最后更新: 2026-03-13</p>
+            <p style="margin-top: 5px; font-size: 12px; opacity: 0.7;">如需帮助，请联系技术支持或查看使用文档</p>
+        </div>
+    </div>
+    
+    <script>
+        // 简单的交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为表格行添加点击效果
+            const tableRows = document.querySelectorAll('.client-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function(e) {
+                    if (!e.target.tagName === 'A') {
+                        const link = this.querySelector('a');
+                        if (link) {
+                            window.location.href = link.href;
+                        }
+                    }
+                });
+            });
+            
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+                const dateStr = now.toLocaleDateString('zh-CN', options);
+                document.querySelector('.header p').textContent = `欢迎回来，李经理！今天是 ${dateStr}`;
+            }
+            
+            updateTime();
+        });
+    </script>
+</body>
+</html>
