@@ -12,27 +12,27 @@ export class ClientService {
    */
   async getClients(filter?: ClientFilter): Promise<Client[]> {
     try {
-      let clients = await db.clients.getAll();
+      let clients = await db.clients.toArray();
       
       // 应用筛选条件
       if (filter) {
         if (filter.name) {
-          clients = clients.filter(client => 
+          clients = clients.filter((client: Client) => 
             client.name.toLowerCase().includes(filter.name!.toLowerCase())
           );
         }
         
         if (filter.riskLevel) {
-          clients = clients.filter(client => 
+          clients = clients.filter((client: Client) => 
             client.riskLevel === filter.riskLevel
           );
         }
         
         // 排序
         if (filter.sortBy) {
-          clients.sort((a, b) => {
-            const aValue = a[filter.sortBy!];
-            const bValue = b[filter.sortBy!];
+          clients.sort((a: Client, b: Client) => {
+            const aValue = a[filter.sortBy! as keyof Client];
+            const bValue = b[filter.sortBy! as keyof Client];
             
             if (typeof aValue === 'string' && typeof bValue === 'string') {
               return filter.sortOrder === 'desc' 
@@ -89,7 +89,7 @@ export class ClientService {
       );
     }
 
-    if (input.totalAssets < 0) {
+    if (input.totalAssets !== undefined && input.totalAssets < 0) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
         '总资产不能为负数'
@@ -103,7 +103,7 @@ export class ClientService {
       phone: input.phone?.trim(),
       email: input.email?.trim(),
       riskLevel: input.riskLevel || 'MODERATE',
-      totalAssets: input.totalAssets || 0,
+      totalAssets: input.totalAssets ?? 0,
       createdAt: now,
       updatedAt: now
     };
@@ -240,14 +240,14 @@ export class ClientService {
    */
   async getClientStats(): Promise<ClientStats> {
     try {
-      const clients = await db.clients.getAll();
+      const clients = await db.clients.toArray();
       
       const totalClients = clients.length;
-      const totalAssets = clients.reduce((sum, client) => sum + client.totalAssets, 0);
+      const totalAssets = clients.reduce((sum: number, client: Client) => sum + client.totalAssets, 0);
       const avgAssets = totalClients > 0 ? totalAssets / totalClients : 0;
       
       // 风险等级分布
-      const riskDistribution = clients.reduce((dist, client) => {
+      const riskDistribution = clients.reduce((dist: Record<string, number>, client: Client) => {
         dist[client.riskLevel] = (dist[client.riskLevel] || 0) + 1;
         return dist;
       }, {} as Record<string, number>);
