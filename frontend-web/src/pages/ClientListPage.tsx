@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Card, Table, Button, Space, Input, Select, Modal, Message } from '@arco-design/web-react';
-import { IconPlus, IconSearch, IconEdit, IconDelete } from '@arco-design/web-react/icon';
+import { IconPlus, IconSearch, IconEdit, IconDelete, IconImport, IconExport } from '@arco-design/web-react/icon';
 import { useNavigate } from 'react-router-dom';
 import { clientService } from '@/services/client';
 import type { Client, ClientFilter } from '@/types';
+import ClientFormModal from '@/components/ClientFormModal';
+import ImportExportModal from '@/components/ImportExportModal';
 
 export default function ClientListPage() {
   const navigate = useNavigate();
@@ -11,6 +13,11 @@ export default function ClientListPage() {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [riskFilter, setRiskFilter] = useState<string>('');
+  
+  // 弹窗控制
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     loadClients();
@@ -49,6 +56,16 @@ export default function ClientListPage() {
     });
   }
 
+  function handleEditClient(client: Client) {
+    setEditingClient(client);
+    setShowClientModal(true);
+  }
+
+  function handleCreateClient() {
+    setEditingClient(null);
+    setShowClientModal(true);
+  }
+
   const columns = [
     {
       title: '客户姓名',
@@ -79,9 +96,15 @@ export default function ClientListPage() {
           <Button
             type="text"
             icon={<IconEdit />}
+            onClick={() => handleEditClient(record)}
+          >
+            编辑
+          </Button>
+          <Button
+            type="text"
             onClick={() => navigate(`/clients/${record.id}`)}
           >
-            查看
+            详情
           </Button>
           <Button
             type="text"
@@ -126,9 +149,21 @@ export default function ClientListPage() {
           搜索
         </Button>
         <Button
+          icon={<IconImport />}
+          onClick={() => setShowImportModal(true)}
+        >
+          导入
+        </Button>
+        <Button
+          icon={<IconExport />}
+          onClick={() => {}}
+        >
+          导出
+        </Button>
+        <Button
           type="primary"
           icon={<IconPlus />}
-          onClick={() => navigate('/clients?action=create')}
+          onClick={handleCreateClient}
         >
           新增客户
         </Button>
@@ -146,5 +181,31 @@ export default function ClientListPage() {
         }}
       />
     </Card>
+
+    {/* 新增/编辑客户弹窗 */}
+    <ClientFormModal
+      visible={showClientModal}
+      client={editingClient}
+      onOk={() => {
+        setShowClientModal(false);
+        setEditingClient(null);
+        loadClients();
+      }}
+      onCancel={() => {
+        setShowClientModal(false);
+        setEditingClient(null);
+      }}
+    />
+
+    {/* 导入导出弹窗 */}
+    <ImportExportModal
+      visible={showImportModal}
+      type="client"
+      onOk={() => {
+        setShowImportModal(false);
+        loadClients();
+      }}
+      onCancel={() => setShowImportModal(false)}
+    />
   );
 }
