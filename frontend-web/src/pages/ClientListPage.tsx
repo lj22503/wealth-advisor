@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, Table, Button, Space, Input, Select, Modal, Message, Typography } from '@arco-design/web-react';
 import { IconPlus, IconSearch, IconEdit, IconDelete, IconImport, IconExport } from '@arco-design/web-react/icon';
-
-const { Text } = Typography;
 import { useNavigate } from 'react-router-dom';
 import { clientService } from '@/services/client';
 import type { Client, ClientFilter } from '@/types';
@@ -226,31 +224,5 @@ export default function ClientListPage() {
         }}
       />
     </Card>
-
-    {/* 新增/编辑客户弹窗 */}
-    <ClientFormModal
-      visible={showClientModal}
-      client={editingClient}
-      onOk={() => {
-        setShowClientModal(false);
-        setEditingClient(null);
-        loadClients();
-      }}
-      onCancel={() => {
-        setShowClientModal(false);
-        setEditingClient(null);
-      }}
-    />
-
-    {/* 导入导出弹窗 */}
-    <ImportExportModal
-      visible={showImportModal}
-      type="client"
-      onOk={() => {
-        setShowImportModal(false);
-        loadClients();
-      }}
-      onCancel={() => setShowImportModal(false)}
-    />
   );
 }
