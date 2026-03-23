@@ -22,11 +22,21 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'arco-vendor': ['@arco-design/web-react'],
-          'echarts-vendor': ['echarts'],
-          'utils-vendor': ['axios', 'dayjs', 'zustand'],
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@arco-design')) {
+              return 'arco-vendor';
+            }
+            if (id.includes('echarts')) {
+              return 'echarts-vendor';
+            }
+            if (id.includes('axios') || id.includes('dayjs') || id.includes('zustand')) {
+              return 'utils-vendor';
+            }
+          }
         },
       },
     },
