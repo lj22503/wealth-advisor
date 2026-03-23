@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Card, Table, Button, Space, Input, Select, Modal, Message } from '@arco-design/web-react';
+import { Card, Table, Button, Space, Input, Select, Modal, Message, Typography } from '@arco-design/web-react';
 import { IconPlus, IconSearch, IconEdit, IconDelete, IconImport, IconExport } from '@arco-design/web-react/icon';
+
+const { Text } = Typography;
 import { useNavigate } from 'react-router-dom';
 import { clientService } from '@/services/client';
 import type { Client, ClientFilter } from '@/types';
 import ClientFormModal from '@/components/ClientFormModal';
 import ImportExportModal from '@/components/ImportExportModal';
+
+const { Text } = Typography;
 
 export default function ClientListPage() {
   const navigate = useNavigate();
@@ -13,6 +17,7 @@ export default function ClientListPage() {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [riskFilter, setRiskFilter] = useState<string>('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   
   // 弹窗控制
   const [showClientModal, setShowClientModal] = useState(false);
@@ -56,6 +61,30 @@ export default function ClientListPage() {
     });
   }
 
+  function handleBatchDelete() {
+    if (selectedRowKeys.length === 0) {
+      Message.warning('请选择要删除的客户');
+      return;
+    }
+
+    Modal.confirm({
+      title: '批量删除确认',
+      content: `确定要删除选中的 ${selectedRowKeys.length} 个客户吗？此操作不可恢复。`,
+      onOk: async () => {
+        try {
+          await Promise.all(
+            selectedRowKeys.map((id) => clientService.deleteClient(id as string))
+          );
+          Message.success(`成功删除 ${selectedRowKeys.length} 个客户`);
+          setSelectedRowKeys([]);
+          loadClients();
+        } catch (error) {
+          Message.error('批量删除失败');
+        }
+      },
+    });
+  }
+
   function handleEditClient(client: Client) {
     setEditingClient(client);
     setShowClientModal(true);
@@ -66,6 +95,7 @@ export default function ClientListPage() {
     setShowClientModal(true);
   }
 
+  // 表格列定义
   const columns = [
     {
       title: '客户姓名',
@@ -167,6 +197,17 @@ export default function ClientListPage() {
         >
           新增客户
         </Button>
+        <Button
+          danger
+          icon={<IconDelete />}
+          onClick={handleBatchDelete}
+          disabled={selectedRowKeys.length === 0}
+        >
+          批量删除
+        </Button>
+        {selectedRowKeys.length > 0 && (
+          <Text type="secondary">已选择 {selectedRowKeys.length} 个客户</Text>
+        )}
       </Space>
 
       {/* 客户表格 */}
@@ -175,6 +216,10 @@ export default function ClientListPage() {
         data={clients}
         rowKey="id"
         loading={loading}
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+        }}
         pagination={{
           pageSize: 10,
           showTotal: true,
