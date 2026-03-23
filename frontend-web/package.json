@@ -13,6 +13,7 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@ant-design/charts": "^2.6.7",
     "@arco-design/web-react": "^2.65.0",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",

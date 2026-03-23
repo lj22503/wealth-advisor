@@ -1,14 +1,18 @@
-import { useEffect } from 'react';
-import { Card, Row, Col, Statistic, Button, Table, Space } from '@arco-design/web-react';
-import { IconUser, IconFile, IconDashboard, IconPlus } from '@arco-design/web-react/icon';
+import { useEffect, useState } from 'react';
+import { Card, Row, Col, Statistic, Button, Table, Space, Typography } from '@arco-design/web-react';
+import { IconUser, IconFile, IconDashboard, IconPlus, IconRefresh } from '@arco-design/web-react/icon';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/appStore';
 import { clientService } from '@/services/client';
+import AssetDistributionChart from '@/components/AssetDistributionChart';
 import type { Client } from '@/types';
+
+const { Text } = Typography;
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { clients, setClients, loading, setLoading } = useAppStore();
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   useEffect(() => {
     loadClients();
@@ -19,6 +23,7 @@ export default function HomePage() {
     try {
       const data = await clientService.getClients();
       setClients(data);
+      setLastUpdated(new Date());
     } catch (error) {
       console.error('Failed to load clients:', error);
     } finally {
@@ -66,7 +71,7 @@ export default function HomePage() {
     <div>
       {/* 统计卡片 */}
       <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={8}>
+        <Col span={6}>
           <Card>
             <Statistic
               title="客户总数"
@@ -76,7 +81,7 @@ export default function HomePage() {
             />
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Card>
             <Statistic
               title="管理资产总额"
@@ -87,7 +92,7 @@ export default function HomePage() {
             />
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Card>
             <Statistic
               title="户均资产"
@@ -96,6 +101,32 @@ export default function HomePage() {
               prefix={<IconDashboard style={{ color: '#f77234' }} />}
               valueStyle={{ fontSize: 28 }}
             />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <div style={{ textAlign: 'center' }}>
+              <Statistic
+                title={
+                  <span>
+                    最后更新
+                    <Button
+                      type="text"
+                      icon={<IconRefresh />}
+                      onClick={loadClients}
+                      loading={loading}
+                      style={{ marginLeft: 8 }}
+                      size="small"
+                    />
+                  </span>
+                }
+                value={
+                  <Text style={{ fontSize: 14 }}>
+                    {lastUpdated.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+                  </Text>
+                }
+              />
+            </div>
           </Card>
         </Col>
       </Row>
@@ -116,27 +147,35 @@ export default function HomePage() {
         </Space>
       </Card>
 
-      {/* 最近客户 */}
-      <Card
-        title="最近客户"
-        extra={
-          <Button type="text" onClick={() => navigate('/clients')}>
-            查看全部 →
-          </Button>
-        }
-      >
-        <Table
-          columns={columns}
-          data={recentClients}
-          rowKey="id"
-          loading={loading}
-          pagination={false}
-          onRow={(record: Client) => ({
-            onClick: () => navigate(`/clients/${record.id}`),
-            style: { cursor: 'pointer' },
-          })}
-        />
-      </Card>
+      {/* 资产分布图表 */}
+      <Row gutter={16} style={{ marginBottom: 24 }}>
+        <Col span={12}>
+          <AssetDistributionChart height={300} />
+        </Col>
+        <Col span={12}>
+          {/* 最近客户 */}
+          <Card
+            title="最近客户"
+            extra={
+              <Button type="text" onClick={() => navigate('/clients')}>
+                查看全部 →
+              </Button>
+            }
+          >
+            <Table
+              columns={columns}
+              data={recentClients}
+              rowKey="id"
+              loading={loading}
+              pagination={false}
+              onRow={(record: Client) => ({
+                onClick: () => navigate(`/clients/${record.id}`),
+                style: { cursor: 'pointer' },
+              })}
+            />
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 }
