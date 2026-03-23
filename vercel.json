@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend-web/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend-web/$1"
+    }
+  ],
+  "env": {
+    "VITE_API_BASE_URL": "/api",
+    "NODE_ENV": "production"
+  }
+}
