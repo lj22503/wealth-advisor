@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Button, Table, Space, Typography } from '@arco-design/web-react';
+import { Card, Statistic, Button, Table, Space, Typography } from '@arco-design/web-react';
+import { Row, Col } from '@arco-design/web-react/Grid';
 import { IconUser, IconFile, IconDashboard, IconPlus, IconRefresh } from '@arco-design/web-react/icon';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/appStore';

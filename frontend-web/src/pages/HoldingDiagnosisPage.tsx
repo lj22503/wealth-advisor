@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, Row, Col, Table, Button, Space, Select, Progress, Tag, Statistic, Message } from '@arco-design/web-react';
+import { Card, Table, Button, Space, Select, Progress, Tag, Statistic, Message } from '@arco-design/web-react';
+import { Row, Col } from '@arco-design/web-react/Grid';
 import { IconDownload, IconRefresh } from '@arco-design/web-react/icon';
 import { clientService } from '@/services/client';
 import { holdingService } from '@/services/holding';
