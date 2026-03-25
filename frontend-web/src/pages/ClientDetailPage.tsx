@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Statistic, Table, Button, Space, Tag, Progress, Message, Descriptions } from '@arco-design/web-react';
-import Grid from '@arco-design/web-react/es/Grid';
+import { Grid } from '@arco-design/web-react';
 const { Row, Col } = Grid;
 import { IconArrowLeft, IconPlus, IconEdit, IconDelete, IconDownload } from '@arco-design/web-react/icon';
 import { useNavigate } from 'react-router-dom';

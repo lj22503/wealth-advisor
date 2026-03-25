@@ -132,7 +132,23 @@ export default function Layout({ children }: LayoutProps) {
           </div>
 
           {/* 用户信息 */}
-          <Dropdown menu={{ items: userMenuItems }} position="br" trigger="click">
+          <Dropdown
+            position="br"
+            trigger="click"
+            droplist={
+              <Menu onClickMenuItem={(key) => {
+                const item = userMenuItems.find(i => i.key === key);
+                item?.onClick?.();
+              }}>
+                {userMenuItems.map((item) => (
+                  <MenuItem key={item.key}>
+                    {item.icon && <span style={{ marginRight: 8 }}>{item.icon}</span>}
+                    {item.title}
+                  </MenuItem>
+                ))}
+              </Menu>
+            }
+          >
             <div
               style={{
                 display: 'flex',
@@ -141,7 +157,6 @@ export default function Layout({ children }: LayoutProps) {
                 cursor: 'pointer',
                 padding: '4px 8px',
                 borderRadius: 4,
-                ':hover': { background: '#f5f5f5' },
               }}
             >
               <Badge count={0}>

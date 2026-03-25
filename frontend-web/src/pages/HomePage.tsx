@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Statistic, Button, Table, Space, Typography } from '@arco-design/web-react';
-import Grid from '@arco-design/web-react/es/Grid';
+import { Grid } from '@arco-design/web-react';
 const { Row, Col } = Grid;
 import { IconUser, IconFile, IconDashboard, IconPlus, IconRefresh } from '@arco-design/web-react/icon';
 import { useNavigate } from 'react-router-dom';
