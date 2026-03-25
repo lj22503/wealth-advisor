@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -20,7 +19,12 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // 禁止 chunk 拆分，所有代码打进一个文件，彻底消除 useState 跨 chunk 问题
+        inlineDynamicImports: true,
+      },
+    },
     minify: 'esbuild',
     sourcemap: false,
   },
