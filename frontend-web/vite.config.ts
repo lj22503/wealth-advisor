@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 
 // https://vite.dev/config/
@@ -20,34 +20,9 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            if (id.includes('@arco-design')) {
-              return 'arco-vendor';
-            }
-            if (id.includes('echarts')) {
-              return 'echarts-vendor';
-            }
-            if (id.includes('axios') || id.includes('dayjs') || id.includes('zustand')) {
-              return 'utils-vendor';
-            }
-          }
-        },
-      },
-    },
-    chunkSizeWarningLimit: 500,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    chunkSizeWarningLimit: 1000,
+    minify: false,
+    sourcemap: false,
   },
   test: {
     globals: true,

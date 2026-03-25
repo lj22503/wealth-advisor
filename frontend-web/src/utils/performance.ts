@@ -3,7 +3,7 @@
  * 包含：懒加载、代码分割、缓存、防抖节流
  */
 
-import { lazy, Suspense, ComponentType } from 'react';
+import { lazy, Suspense, ComponentType, useState } from 'react';
 
 /**
  * 组件懒加载（带错误处理）
@@ -243,5 +243,3 @@ export function useVirtualList<T>(
     handleScroll,
   };
 }
-
-import { useState } from 'react';

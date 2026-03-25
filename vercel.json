@@ -22,5 +22,8 @@
   "env": {
     "VITE_API_BASE_URL": "/api"
   },
-  "installCommand": "cd frontend-web && npm install"
+  "installCommand": "cd frontend-web && npm install",
+  "github": {
+    "silent": false
+  }
 }
