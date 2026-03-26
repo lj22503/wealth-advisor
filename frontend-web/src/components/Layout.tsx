@@ -14,7 +14,7 @@ import {
 import { useAppStore } from '@/store/appStore';
 
 const { Header, Sider, Content } = ArcoLayout;
-const { MenuItem } = Menu;
+const MenuItem = Menu.Item;
 
 interface LayoutProps {
   children?: React.ReactNode;
