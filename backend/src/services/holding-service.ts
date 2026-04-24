@@ -114,16 +114,19 @@ export class HoldingService {
     try {
       await db.holdings.add(holding);
       
-      // 更新客户总资产
-      const clientHoldings = await this.getClientHoldings(input.clientId);
-      const totalHoldingsValue = clientHoldings.reduce(
-        (sum, h) => sum + (h.currentPrice * h.amount), 
-        0
-      );
+      // 更新客户总资产 - holdings是totalAssets的一部分
+      // 获取客户当前记录的总资产（可能是初始化时设置的客户整体资产）
+      const client = await db.clients.get(input.clientId);
+      const existingAssets = client?.totalAssets || 0;
       
-      // 更新客户总资产（仅更新持仓部分，其他资产不变）
+      // 计算新增持仓的价值
+      const newHoldingValue = holding.currentPrice * holding.amount;
+      
+      // 如果客户已有总资产记录，说明totalAssets已经包含其他资产类别（股票、债券等）
+      // 此时应该加上新增持仓的价值
+      // 如果客户没有总资产记录（existingAssets=0），则totalAssets=持仓总价值
       await db.clients.update(input.clientId, {
-        totalAssets: totalHoldingsValue,
+        totalAssets: existingAssets + newHoldingValue,
         updatedAt: new Date()
       });
 
@@ -180,15 +183,24 @@ export class HoldingService {
 
       await db.holdings.put(updatedHolding);
       
-      // 更新客户总资产
+      // 更新客户总资产 - 计算所有持仓的总价值
+      const client = await db.clients.get(existingHolding.clientId);
+      const existingAssets = client?.totalAssets || 0;
       const clientHoldings = await this.getClientHoldings(existingHolding.clientId);
       const totalHoldingsValue = clientHoldings.reduce(
         (sum, h) => sum + (h.currentPrice * h.amount), 
         0
       );
       
+      // 如果客户设置了初始资产（股票、债券等非基金资产），这些应该保留
+      // 我们只更新持仓相关的部分：假设初始资产是 totalAssets - old_holdings_value
+      // 更简单的方法：如果之前totalAssets <= 旧持仓价值，说明totalAssets纯粹是持仓
+      // 否则，totalAssets包含非持仓资产，我们应该保留
+      const oldHoldingValue = existingHolding.currentPrice * existingHolding.amount;
+      const nonHoldingAssets = Math.max(0, existingAssets - oldHoldingValue);
+      
       await db.clients.update(existingHolding.clientId, {
-        totalAssets: totalHoldingsValue,
+        totalAssets: nonHoldingAssets + totalHoldingsValue,
         updatedAt: new Date()
       });
 
@@ -222,7 +234,12 @@ export class HoldingService {
 
       await db.holdings.delete(id);
       
-      // 更新客户总资产
+      // 更新客户总资产 - 删除持仓后，保留其他资产
+      const client = await db.clients.get(holding.clientId);
+      const existingAssets = client?.totalAssets || 0;
+      const oldHoldingValue = holding.currentPrice * holding.amount;
+      const nonHoldingAssets = Math.max(0, existingAssets - oldHoldingValue);
+      
       const clientHoldings = await this.getClientHoldings(holding.clientId);
       const totalHoldingsValue = clientHoldings.reduce(
         (sum, h) => sum + (h.currentPrice * h.amount), 
@@ -230,7 +247,7 @@ export class HoldingService {
       );
       
       await db.clients.update(holding.clientId, {
-        totalAssets: totalHoldingsValue,
+        totalAssets: nonHoldingAssets + totalHoldingsValue,
         updatedAt: new Date()
       });
 

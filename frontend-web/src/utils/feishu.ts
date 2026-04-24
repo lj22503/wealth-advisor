@@ -198,11 +198,12 @@ export async function requestNotificationPermission(): Promise<boolean> {
 
 /**
  * 获取飞书应用配置
+ * 注意：appSecret 仅在后端使用，前端只暴露 appId
  */
 export function getFeishuAppConfig() {
   return {
     appId: import.meta.env.VITE_FEISHU_APP_ID || '',
-    appSecret: import.meta.env.VITE_FEISHU_APP_SECRET || '',
+    // appSecret 不应该暴露在前端，它应该只在后端使用
     redirectUri: import.meta.env.VITE_FEISHU_REDIRECT_URI || window.location.origin,
   };
 }

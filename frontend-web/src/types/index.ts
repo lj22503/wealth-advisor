@@ -19,7 +19,16 @@ export interface PaginationParams {
 }
 
 // 客户类型
-export type RiskLevel = 'CONSERVATIVE' | 'MODERATE' | 'AGGRESSIVE' | 'C1' | 'C2' | 'C3' | 'C4' | 'C5';
+export type RiskLevel = 'C1' | 'C2' | 'C3' | 'C4' | 'C5';
+
+// 风险等级中文标签
+export const RISK_LEVEL_LABELS: Record<RiskLevel, string> = {
+  'C1': '保守型',
+  'C2': '稳健型',
+  'C3': '平衡型',
+  'C4': '进取型',
+  'C5': '激进型',
+};
 
 export interface Client {
   id: string;

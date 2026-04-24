@@ -3,7 +3,7 @@ import { Card, Table, Button, Space, Input, Select, Modal, Message, Typography }
 import { IconPlus, IconSearch, IconEdit, IconDelete, IconImport, IconExport } from '@arco-design/web-react/icon';
 import { useNavigate } from 'react-router-dom';
 import { clientService } from '@/services/client';
-import type { Client, ClientFilter } from '@/types';
+import type { Client, ClientFilter, RiskLevel } from '@/types';
 import ClientFormModal from '@/components/ClientFormModal';
 import ImportExportModal from '@/components/ImportExportModal';
 
@@ -31,7 +31,7 @@ export default function ClientListPage() {
     try {
       const filter: ClientFilter = {};
       if (searchText) filter.name = searchText;
-      if (riskFilter) filter.riskLevel = riskFilter as any;
+      if (riskFilter) filter.riskLevel = riskFilter as RiskLevel;
       
       const data = await clientService.getClients(filter);
       setClients(data);
@@ -170,8 +170,8 @@ export default function ClientListPage() {
           <Select.Option value="C1">C1 保守型</Select.Option>
           <Select.Option value="C2">C2 稳健型</Select.Option>
           <Select.Option value="C3">C3 平衡型</Select.Option>
-          <Select.Option value="C4">C4 成长型</Select.Option>
-          <Select.Option value="C5">C5 进取型</Select.Option>
+          <Select.Option value="C4">C4 进取型</Select.Option>
+          <Select.Option value="C5">C5 激进型</Select.Option>
         </Select>
         <Button type="primary" onClick={loadClients}>
           搜索

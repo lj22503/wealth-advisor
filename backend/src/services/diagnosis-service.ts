@@ -2,6 +2,14 @@ import { Client, Holding } from '../types';
 import { db } from '../db';
 import { AppError, ErrorCode } from '../utils/errors';
 
+// 类型定义（前置声明）
+interface AssetCategory {
+  name: string;
+  totalValue: number;
+  holdings: Holding[];
+  percentage: number;
+}
+
 /**
  * 持仓诊断服务
  */
@@ -274,11 +282,4 @@ interface DiagnosisResult {
     assetAllocation?: AssetCategory[];
     suggestions: string[];
   };
-}
-
-interface AssetCategory {
-  name: string;
-  totalValue: number;
-  holdings: Holding[];
-  percentage: number;
 }

@@ -12,7 +12,24 @@ export interface Client {
   updatedAt: Date;
 }
 
-export type RiskLevel = 'CONSERVATIVE' | 'MODERATE' | 'AGGRESSIVE';
+// 风险等级类型 - C1-C5 量表
+export type RiskLevel = 'C1' | 'C2' | 'C3' | 'C4' | 'C5';
+
+// 兼容旧数据的风险等级映射
+export const LEGACY_RISK_LEVEL_MAP: Record<string, RiskLevel> = {
+  'CONSERVATIVE': 'C1',
+  'MODERATE': 'C3',
+  'AGGRESSIVE': 'C5',
+};
+
+// 风险等级中文标签
+export const RISK_LEVEL_LABELS: Record<RiskLevel, string> = {
+  'C1': '保守型',
+  'C2': '稳健型',
+  'C3': '平衡型',
+  'C4': '进取型',
+  'C5': '激进型',
+};
 
 export interface ClientInput {
   name: string;

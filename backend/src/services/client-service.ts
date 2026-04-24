@@ -1,4 +1,4 @@
-import { Client, ClientInput, ClientFilter } from '../types';
+import { Client, ClientInput, ClientFilter, LEGACY_RISK_LEVEL_MAP } from '../types';
 import { db } from '../db';
 import { generateId } from '../utils/id-generator';
 import { AppError, ErrorCode } from '../utils/errors';
@@ -23,9 +23,14 @@ export class ClientService {
         }
         
         if (filter.riskLevel) {
-          clients = clients.filter((client: Client) => 
-            client.riskLevel === filter.riskLevel
-          );
+          // 支持新旧两种风险等级格式
+          clients = clients.filter((client: Client) => {
+            if (client.riskLevel === filter.riskLevel) return true;
+            // 兼容旧数据：CONSERVATIVE->C1, MODERATE->C3, AGGRESSIVE->C5
+            if (LEGACY_RISK_LEVEL_MAP[client.riskLevel] === filter.riskLevel) return true;
+            if (client.riskLevel === LEGACY_RISK_LEVEL_MAP[filter.riskLevel]) return true;
+            return false;
+          });
         }
         
         // 排序
@@ -102,7 +107,7 @@ export class ClientService {
       name: input.name.trim(),
       phone: input.phone?.trim(),
       email: input.email?.trim(),
-      riskLevel: input.riskLevel || 'MODERATE',
+      riskLevel: input.riskLevel || 'C3',
       totalAssets: input.totalAssets ?? 0,
       createdAt: now,
       updatedAt: now
