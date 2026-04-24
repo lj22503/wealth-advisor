@@ -9,23 +9,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-    },
-  },
   build: {
-    rollupOptions: {
-      output: {
-        // 禁止 chunk 拆分，所有代码打进一个文件，彻底消除 useState 跨 chunk 问题
-        inlineDynamicImports: true,
-      },
-    },
-    minify: false,
     sourcemap: false,
   },
   test: {
